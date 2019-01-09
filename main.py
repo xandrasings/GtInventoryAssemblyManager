@@ -1,4 +1,9 @@
+from Imports.Utilities.fileManagement import *
+
 def main():
-	print("Hello World!")
+	createAssemblyOrderFile()
+	deleteAssemblyOrderFile()
+	createAssemblyOrderFile()
+	renameAssemblyOrderFile()
 
 main()
