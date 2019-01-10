@@ -1,9 +1,10 @@
 from Imports.Utilities.fileManagement import *
 
 def main():
-	createAssemblyOrderFile()
-	deleteAssemblyOrderFile()
+	# TODO check existence of template file
 	createAssemblyOrderFile()
 	renameAssemblyOrderFile()
+
+	# deleteAssemblyOrderFile()
 
 main()
