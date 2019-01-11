@@ -36,7 +36,7 @@ def getValidTaskFiles():
 	return validFiles
 
 def isValidExcelFile(item):
-	status = (
+	return (
 		(
 			item.endswith('.xlsx') or
 			item.endswith('.xls')
@@ -44,7 +44,6 @@ def isValidExcelFile(item):
 			not item.startswith('~')
 		)
 	)
-	return status #TODO reformat
 
 
 def solicitPathOptionIndex(validOptions):
