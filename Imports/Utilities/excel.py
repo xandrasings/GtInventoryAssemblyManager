@@ -36,6 +36,9 @@ def generateTaskList():
 		components = productDictionary[product]
 		taskList.append(Task(product, quantity, components))
 
+	return taskList
+
+
 def generateProductDictionary(taskWorkBook):
 	componentSheet = taskWorkBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
@@ -55,3 +58,8 @@ def generateProductDictionary(taskWorkBook):
 		productDictionary[product].append(Component(part, quantity))
 
 	return productDictionary
+
+
+def populateAssemblyOrderFile(taskList):
+	for i in range (0, len(taskList)):
+		pass
