@@ -43,9 +43,7 @@ def generateProductDictionary(taskWorkBook):
 	componentSheet = taskWorkBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
 	# TODO assert column headers are as expected
-
-	rowMax = componentSheet.max_row
-	# use regex to assert expected formatting of rows
+	# TODO use regex to assert expected formatting of rows
 	productDictionary = {}
 	for i in range(2, componentSheet.max_row):
 		product = str(componentSheet.cell(row = i, column = 1).value)
