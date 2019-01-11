@@ -7,7 +7,16 @@ from openpyxl import load_workbook # TODO look into this
 import os
 
 def loadReadOnlyWorkbook():
-	return load_workbook(selectTaskFile(), read_only = True)
+	workBook = load_workbook(selectTaskFile(), read_only = True)
+	assertExpectedSheets(workBook)
+	return workBook
+
+
+def assertExpectedSheets(workBook):
+	for sheet in TASK_FILE_SHEETS:
+		if not sheet in workBook.sheetnames:
+			print('Selected task file is missing ' + sheet + ' worksheet.')
+			quit()
 
 
 def generateTaskList():
@@ -27,7 +36,6 @@ def generateTaskList():
 		taskList.append(Task(product, quantity, components))
 
 def generateProductDictionary(taskWorkBook):
-	# TODO assert existence of sheet
 	componentSheet = taskWorkBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
 	# TODO assert column headers are as expected
