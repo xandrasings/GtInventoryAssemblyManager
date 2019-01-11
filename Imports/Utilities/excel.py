@@ -16,6 +16,7 @@ def loadReadOnlyWorkbook():
 def assertExpectedWorkSheets(fileType, workBook):
 	for sheet in FILE_SHEETS[fileType]:
 		if not sheet in workBook.sheetnames:
+			print('Selected task file is missing ' + sheet + ' worksheet.')
 			quit()
 
 
