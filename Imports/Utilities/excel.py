@@ -4,6 +4,9 @@ from ..Classes.Component import *
 from openpyxl import load_workbook # TODO look into this 
 import os
 
+def generateTaskList():
+	taskList = []
+
 def generateProductDictionary():
 	# TODO allow user to select filename
 	# TODO assert existence of files, allow backout
