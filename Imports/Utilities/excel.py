@@ -1,5 +1,6 @@
 from .const import *
 from ..Classes.Component import *
+from ..Classes.Task import *
 
 from openpyxl import load_workbook # TODO look into this 
 import os
@@ -7,12 +8,29 @@ import os
 def generateTaskList():
 	taskList = []
 
-def generateProductDictionary():
 	# TODO allow user to select filename
 	# TODO assert existence of files, allow backout
-
-
 	taskWorkBook = load_workbook(os.path.join(TASK_LISTS_DIR_PATH, "gtProductAssembly010819.xlsx"), read_only = True)
+	taskSheet = taskWorkBook['tasks']
+
+	productDictionary = generateProductDictionary(taskWorkBook)
+
+	maxRow = taskSheet.max_row
+	# TODO verify actual maxRow
+	maxRow = 114
+
+	for i in range(2, maxRow):
+		product = str(taskSheet.cell(row = i, column = 1).value)
+		quantity = taskSheet.cell(row = i, column = 2).value
+		components = productDictionary[product]
+
+		print(product + ", " + str(quantity) + ", " + ",".join([component.summarize() for component in components]))
+
+		taskList.append(Task(product, quantity, components))
+
+def generateProductDictionary(taskWorkBook):
+
+
 	# TODO assert existence of sheet
 	componentSheet = taskWorkBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()

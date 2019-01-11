@@ -1,10 +1,9 @@
-from Imports.Classes.Product import *
 from Imports.Utilities.excel import *
 from Imports.Utilities.fileManagement import *
 
 def main():
 
-	productDictionary = generateProductDictionary()
+	taskList = generateTaskList()
 
 	# TODO check existence of template file
 	createAssemblyOrderFile()
