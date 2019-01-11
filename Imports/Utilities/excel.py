@@ -4,19 +4,18 @@ from ..Classes.Component import *
 from ..Classes.Task import *
 
 from openpyxl import load_workbook
- 
+
 import os
 
 def loadReadOnlyWorkbook():
 	workBook = load_workbook(selectTaskFile(), read_only = True)
-	assertExpectedSheets(workBook)
+	assertExpectedWorkSheets(TASKS, workBook)
 	return workBook
 
 
-def assertExpectedSheets(workBook):
-	for sheet in TASK_FILE_SHEETS:
+def assertExpectedWorkSheets(fileType, workBook):
+	for sheet in FILE_SHEETS[fileType]:
 		if not sheet in workBook.sheetnames:
-			print('Selected task file is missing ' + sheet + ' worksheet.')
 			quit()
 
 
