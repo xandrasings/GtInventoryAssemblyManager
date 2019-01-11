@@ -7,9 +7,9 @@ from openpyxl import load_workbook
 
 import os
 
-def loadWorkbook(readOnly):
-	workBook = load_workbook(selectTaskFile(), read_only = readOnly)
-	assertExpectedWorkSheets(TASKS, workBook)
+def loadWorkbook(fileType, filePath, readOnly = False):
+	workBook = load_workbook(filePath, readOnly)
+	assertExpectedWorkSheets(fileType, workBook)
 	return workBook
 
 
@@ -23,10 +23,10 @@ def assertExpectedWorkSheets(fileType, workBook):
 def generateTaskList():
 	taskList = []
 
-	taskWorkBook = loadWorkbook(True)
-	taskSheet = taskWorkBook['tasks']
+	workBook = loadWorkbook(TASKS, selectTaskFile(), True)
+	taskSheet = workBook['tasks']
 
-	productDictionary = generateProductDictionary(taskWorkBook)
+	productDictionary = generateProductDictionary(workBook)
 
 	for i in range(2, taskSheet.max_row):
 		product = str(taskSheet.cell(row = i, column = 1).value)
@@ -39,8 +39,8 @@ def generateTaskList():
 	return taskList
 
 
-def generateProductDictionary(taskWorkBook):
-	componentSheet = taskWorkBook['components']
+def generateProductDictionary(workBook):
+	componentSheet = workBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
 	# TODO assert column headers are as expected
 	# TODO use regex to assert expected formatting of rows
@@ -59,5 +59,6 @@ def generateProductDictionary(taskWorkBook):
 
 
 def populateAssemblyOrderFile(taskList):
+	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_NAME_PATH)
 	for i in range (0, len(taskList)):
 		pass
