@@ -7,8 +7,8 @@ from openpyxl import load_workbook
 
 import os
 
-def loadReadOnlyWorkbook():
-	workBook = load_workbook(selectTaskFile(), read_only = True)
+def loadWorkbook(readOnly):
+	workBook = load_workbook(selectTaskFile(), read_only = readOnly)
 	assertExpectedWorkSheets(TASKS, workBook)
 	return workBook
 
@@ -23,7 +23,7 @@ def assertExpectedWorkSheets(fileType, workBook):
 def generateTaskList():
 	taskList = []
 
-	taskWorkBook = loadReadOnlyWorkbook()
+	taskWorkBook = loadWorkbook(True)
 	taskSheet = taskWorkBook['tasks']
 
 	productDictionary = generateProductDictionary(taskWorkBook)
