@@ -1,36 +1,32 @@
 from .const import *
+from .fileManagement import *
 from ..Classes.Component import *
 from ..Classes.Task import *
 
 from openpyxl import load_workbook # TODO look into this 
 import os
 
+def loadReadOnlyWorkbook():
+	return load_workbook(selectTaskFile(), read_only = True)
+
+
 def generateTaskList():
 	taskList = []
 
-	# TODO allow user to select filename
-	# TODO assert existence of files, allow backout
-	taskWorkBook = load_workbook(os.path.join(TASK_LISTS_DIR_PATH, "gtProductAssembly010819.xlsx"), read_only = True)
+	taskWorkBook = loadReadOnlyWorkbook()
 	taskSheet = taskWorkBook['tasks']
 
 	productDictionary = generateProductDictionary(taskWorkBook)
 
-	maxRow = taskSheet.max_row
-	# TODO verify actual maxRow
-	maxRow = 114
-
-	for i in range(2, maxRow):
+	for i in range(2, taskSheet.max_row):
 		product = str(taskSheet.cell(row = i, column = 1).value)
+		if product == "None":
+			break
 		quantity = taskSheet.cell(row = i, column = 2).value
 		components = productDictionary[product]
-
-		print(product + ", " + str(quantity) + ", " + ",".join([component.summarize() for component in components]))
-
 		taskList.append(Task(product, quantity, components))
 
 def generateProductDictionary(taskWorkBook):
-
-
 	# TODO assert existence of sheet
 	componentSheet = taskWorkBook['components']
 	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
