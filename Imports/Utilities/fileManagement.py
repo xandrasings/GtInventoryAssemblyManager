@@ -1,5 +1,6 @@
 from .const import *
 from .dateTime import *
+from ..Classes.Component import *
 
 import shutil
 import os
