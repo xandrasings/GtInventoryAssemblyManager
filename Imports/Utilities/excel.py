@@ -45,9 +45,7 @@ def generateTaskList():
 
 def generateProductDictionary(workBook):
 	componentSheet = workBook[TASK_FILE_COMPONENTS_SHEET]
-	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
-	# TODO assert column headers are as expected
-	# TODO use regex to assert expected formatting of rows
+	verifyComponentSheetFormatting(componentSheet)
 	productDictionary = {}
 	for i in range(2, componentSheet.max_row):
 		product = str(componentSheet.cell(row = i, column = 1).value)
@@ -61,6 +59,13 @@ def generateProductDictionary(workBook):
 
 	assertComponentMax(productDictionary)
 	return productDictionary
+
+
+def verifyComponentSheetFormatting(sheet):
+	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
+	# TODO assert column headers are as expected
+	# TODO use regex to assert expected formatting of rows
+	pass
 
 
 def assertComponentMax(productDictionary):
