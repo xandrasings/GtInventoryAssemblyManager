@@ -98,10 +98,18 @@ def populateAssemblyOrderFile(taskList):
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
 			currentRow = currentRow + 1
-
+		formatSheet(newSheet)
 
 	workBook.remove(templateSheet)
 	workBook.save(ASSEMBLY_ORDER_FILE_NAME_PATH)
+	
+
+def generateSheetName(counter, product):
+	return str(counter + 1) + " " + product[:27]
+
+
+def generateFraction(counter, total):
+	return str(counter + 1) + "/" + str(total)
 
 
 def populateCell(sheet, dataElementType, value, currentRow = None):
@@ -117,11 +125,6 @@ def calculateDataElementRow(dataElementType, currentRow):
 		quit()
 
 	return currentRow
-	
 
-def generateSheetName(counter, product):
-	return str(counter + 1) + " " + product[:27]
-
-
-def generateFraction(counter, total):
-	return str(counter + 1) + "/" + str(total)
+def formatSheet(sheet):
+	pass
