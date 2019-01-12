@@ -57,7 +57,15 @@ def generateProductDictionary(workBook):
 
 		productDictionary[product].append(Component(part, quantity))
 
+	assertComponentMax(productDictionary)
 	return productDictionary
+
+
+def assertComponentMax(productDictionary):
+	for product in productDictionary:
+		if len(productDictionary[product]) > PRODUCT_COMPONENT_MAX:
+			print('Product ' + product + ' has over the max (' + str(PRODUCT_COMPONENT_MAX) + ') of assembly components.')
+			quit()
 
 
 def generateAssemblyOrderFile(taskList):
