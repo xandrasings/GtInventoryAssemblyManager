@@ -6,7 +6,9 @@ from ..Classes.Task import *
 
 from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
+from openpyxl.styles import Alignment
 from openpyxl.styles.borders import Border, Side
+
 
 import os
 
@@ -29,14 +31,13 @@ def generateTaskList():
 
 	workBook = loadWorkbook(TASKS, selectTaskFile(), True)
 	taskSheet = workBook[TASK_FILE_TASK_SHEET]
-
 	productDictionary = generateProductDictionary(workBook)
 
 	for i in range(2, taskSheet.max_row):
-		product = str(taskSheet.cell(row = i, column = 1).value)
+		product = str(taskSheet.cell(row = i, column = TASK_LIST_PRODUCT_COLUMN).value)
 		if product == "None":
 			break
-		quantity = taskSheet.cell(row = i, column = 2).value
+		quantity = taskSheet.cell(row = i, column = TASK_LIST_QUANTITY_COLUMN).value
 		components = productDictionary[product]
 		taskList.append(Task(product, quantity, components))
 
@@ -48,9 +49,9 @@ def generateProductDictionary(workBook):
 	verifyComponentSheetFormatting(componentSheet)
 	productDictionary = {}
 	for i in range(2, componentSheet.max_row):
-		product = str(componentSheet.cell(row = i, column = 1).value)
-		part = str(componentSheet.cell(row = i, column = 2).value)
-		quantity = componentSheet.cell(row = i, column = 3).value
+		product = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PRODUCT_COLUMN).value)
+		part = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PART_COLUMN).value)
+		quantity = componentSheet.cell(row = i, column = COMPONENT_LIST_QUANTITY_COLUMN).value
 
 		if product not in productDictionary.keys():
 			productDictionary[product] = []
@@ -79,7 +80,8 @@ def generateAssemblyOrderFile(taskList):
 	createAssemblyOrderFile()
 	try:
 		populateAssemblyOrderFile(taskList)
-		renameAssemblyOrderFile()
+		fileName = renameAssemblyOrderFile()
+		print('Successfully generated assembly order file: ' + fileName)
 	except:
 		print('Something went wrong! Cancelling process.')
 		deleteAssemblyOrderFile()
@@ -110,7 +112,7 @@ def populateAssemblyOrderPages(workBook, taskList):
 		populateCell(newSheet, PRODUCT, product)
 		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
 
-		currentRow = 8
+		currentRow = PRODUCT_COMPONENT_START_ROW
 		for component in taskList[i].getComponents():
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
@@ -145,7 +147,14 @@ def calculateDataElementRow(dataElementType, currentRow):
 
 def formatAssemblyOrderSheet(sheet):
 	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
-	addSingleRowBoxBorder(sheet, 7, 1, 8)
+	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
+	leftAlignAssemblyOrderNumbers(sheet)
+
+
+def addImage(sheet, imagePath, targetCell):
+	image = Image(imagePath)
+	# image.anchor(sheet.cell(row = targetRow, column = targetColumn))
+	sheet.add_image(image, targetCell)
 
 
 def addSingleRowBoxBorder(sheet, targetRow, start, stop):
@@ -159,7 +168,11 @@ def addSingleRowBoxBorder(sheet, targetRow, start, stop):
 	sheet.cell(row = targetRow, column = start).border = leftEndBorder
 	sheet.cell(row = targetRow, column = stop - 1).border = rightEndBorder
 
-def addImage(sheet, imagePath, targetCell):
-	image = Image(imagePath)
-	# image.anchor(sheet.cell(row = targetRow, column = targetColumn))
-	sheet.add_image(image, targetCell)
+
+def leftAlignAssemblyOrderNumbers(sheet):
+	for targetRow in range (PRODUCT_COMPONENT_START_ROW, PRODUCT_COMPONENT_START_ROW + PRODUCT_COMPONENT_MAX):
+		sheet.cell(row = targetRow, column = PRODUCT_COMPONENT_LIST_PACKAGE_QUANTITY_COLUMN).alignment = Alignment(horizontal = 'left')
+		sheet.cell(row = targetRow, column = PRODUCT_COMPONENT_LIST_ORDER_QUANTITY_COLUMN).alignment = Alignment(horizontal = 'left')
+
+
+

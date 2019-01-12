@@ -83,8 +83,8 @@ def generateAssemblyOrderFileName():
 	return ASSEMBLY_ORDER_FILE_NAME_PREFIX + getDateTimeAsFilePathSegment() + EXCEL_FILE_NAME_SUFFIX
 
 
-def generateAssemblyOrderFilePath():
-	return extendPath(ASSEMBLY_ORDERS_DIR_PATH, generateAssemblyOrderFileName())
+def generateAssemblyOrderFilePath(fileName):
+	return extendPath(ASSEMBLY_ORDERS_DIR_PATH, fileName)
 
 
 def createAssemblyOrderFile():
@@ -95,7 +95,9 @@ def createAssemblyOrderFile():
 
 
 def renameAssemblyOrderFile():
-	shutil.move(ASSEMBLY_ORDER_FILE_PATH, generateAssemblyOrderFilePath())
+	fileName = generateAssemblyOrderFileName()
+	shutil.move(ASSEMBLY_ORDER_FILE_PATH, generateAssemblyOrderFilePath(fileName))
+	return fileName
 
 
 def deleteAssemblyOrderFile():
