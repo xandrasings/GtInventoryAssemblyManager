@@ -4,10 +4,11 @@ from .sys import *
 from ..Classes.Component import *
 from ..Classes.Task import *
 
-
 from openpyxl import load_workbook
+from openpyxl.styles.borders import Border, Side
 
 import os
+
 
 def loadWorkbook(fileType, filePath, readOnly = False):
 	workBook = load_workbook(filePath, readOnly)
@@ -127,4 +128,16 @@ def calculateDataElementRow(dataElementType, currentRow):
 	return currentRow
 
 def formatSheet(sheet):
-	pass
+	addSingleRowBoxBorder(sheet, 7, 1, 8)
+
+
+def addSingleRowBoxBorder(sheet, targetRow, start, stop):
+	border = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'))
+	leftEndBorder = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'), left = Side(style='thin', color='00000000'))
+	rightEndBorder = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'), right = Side(style='thin', color='00000000'))
+	
+	for targetColumn in range(start + 1, stop - 1):
+		sheet.cell(row = targetRow, column = targetColumn).border = border
+
+	sheet.cell(row = targetRow, column = start).border = leftEndBorder
+	sheet.cell(row = targetRow, column = stop - 1).border = rightEndBorder
