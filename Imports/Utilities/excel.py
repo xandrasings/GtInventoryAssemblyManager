@@ -5,6 +5,7 @@ from ..Classes.Component import *
 from ..Classes.Task import *
 
 from openpyxl import load_workbook
+from openpyxl.drawing.image import Image
 from openpyxl.styles.borders import Border, Side
 
 import os
@@ -81,7 +82,7 @@ def generateAssemblyOrderFile(taskList):
 
 
 def populateAssemblyOrderFile(taskList):
-	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_NAME_PATH)
+	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
 	templateSheet = workBook[TEMPLATE_FILE_TEMPLATE_SHEET]
 	taskCount = len(taskList)
 
@@ -102,7 +103,7 @@ def populateAssemblyOrderFile(taskList):
 		formatSheet(newSheet)
 
 	workBook.remove(templateSheet)
-	workBook.save(ASSEMBLY_ORDER_FILE_NAME_PATH)
+	workBook.save(ASSEMBLY_ORDER_FILE_PATH)
 	
 
 def generateSheetName(counter, product):
@@ -128,6 +129,7 @@ def calculateDataElementRow(dataElementType, currentRow):
 	return currentRow
 
 def formatSheet(sheet):
+	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
 	addSingleRowBoxBorder(sheet, 7, 1, 8)
 
 
@@ -141,3 +143,8 @@ def addSingleRowBoxBorder(sheet, targetRow, start, stop):
 
 	sheet.cell(row = targetRow, column = start).border = leftEndBorder
 	sheet.cell(row = targetRow, column = stop - 1).border = rightEndBorder
+
+def addImage(sheet, imagePath, targetCell):
+	image = Image(imagePath)
+	# image.anchor(sheet.cell(row = targetRow, column = targetColumn))
+	sheet.add_image(image, targetCell)

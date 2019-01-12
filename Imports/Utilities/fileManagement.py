@@ -95,9 +95,9 @@ def createAssemblyOrderFile():
 
 
 def renameAssemblyOrderFile():
-	shutil.move(ASSEMBLY_ORDER_FILE_NAME_PATH, generateAssemblyOrderFilePath())
+	shutil.move(ASSEMBLY_ORDER_FILE_PATH, generateAssemblyOrderFilePath())
 
 
 def deleteAssemblyOrderFile():
-	os.remove(ASSEMBLY_ORDER_FILE_NAME_PATH)
+	os.remove(ASSEMBLY_ORDER_FILE_PATH)
 
