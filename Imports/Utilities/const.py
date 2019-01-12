@@ -33,3 +33,23 @@ FILE_SHEETS = {
 }
 
 PRODUCT_COMPONENT_MAX = 30
+
+PRODUCT = 'product'
+FRACTION = 'fraction'
+QUANTITY = 'quantity'
+PART = 'part'
+PART_QUANTITY = 'part_quantity'
+
+getDataElementRow = {
+	FRACTION : 1,
+	PRODUCT : 2,
+	QUANTITY : 4
+}
+
+getDataElementColumn = {
+	FRACTION : 7,
+	PRODUCT : 4,
+	QUANTITY : 4,
+	PART : 1,
+	PART_QUANTITY : 4
+}

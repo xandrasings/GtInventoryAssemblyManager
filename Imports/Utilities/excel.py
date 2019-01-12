@@ -88,22 +88,36 @@ def populateAssemblyOrderFile(taskList):
 		product = taskList[i].getProduct()
 		newSheet = workBook.copy_worksheet(templateSheet)
 		newSheet.title = generateSheetName(i, product)
-		#TODO nerd out
-		newSheet.cell(row = 1, column = 7).value = generateFraction(i, taskCount);
-		newSheet.cell(row = 2, column = 4).value = product
-		newSheet.cell(row = 4, column = 4).value = taskList[i].getQuantity()
 
-		#TODO implement max
+		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
+		populateCell(newSheet, PRODUCT, product)
+		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
+
 		currentRow = 8
 		for component in taskList[i].getComponents():
-			newSheet.cell(row = currentRow, column = 1).value = component.getPart()
-			newSheet.cell(row = currentRow, column = 4).value = component.getQuantity()
+			populateCell(newSheet, PART, component.getPart(), currentRow)
+			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
 			currentRow = currentRow + 1
 
 
 	workBook.remove(templateSheet)
 	workBook.save(ASSEMBLY_ORDER_FILE_NAME_PATH)
 
+
+def populateCell(sheet, dataElementType, value, currentRow = None):
+	sheet.cell(row = calculateDataElementRow(dataElementType, currentRow), column = getDataElementColumn[dataElementType]).value = value;
+
+
+def calculateDataElementRow(dataElementType, currentRow):
+	if dataElementType not in [PART, PART_QUANTITY]:
+		currentRow = getDataElementRow[dataElementType]
+
+	if currentRow == None:
+		print('Encountered error calculating target row for ' + dataElementType)
+		quit()
+
+	return currentRow
+	
 
 def generateSheetName(counter, product):
 	return str(counter + 1) + " " + product[:27]
