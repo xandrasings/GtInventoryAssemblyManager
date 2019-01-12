@@ -83,6 +83,16 @@ def generateAssemblyOrderFile(taskList):
 
 def populateAssemblyOrderFile(taskList):
 	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
+	populateCopyrightPage(workBook)
+	populateAssemblyOrderPages(workBook, taskList)
+
+
+def populateCopyrightPage(workBook):
+	copyrightSheet = workBook[TEMPLATE_FILE_COPYRIGHT_SHEET]
+	addImage(copyrightSheet, VERTEX_IMAGE_FILE_PATH, 'B3')
+
+
+def populateAssemblyOrderPages(workBook, taskList):
 	templateSheet = workBook[TEMPLATE_FILE_TEMPLATE_SHEET]
 	taskCount = len(taskList)
 
@@ -100,7 +110,7 @@ def populateAssemblyOrderFile(taskList):
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
 			currentRow = currentRow + 1
-		formatSheet(newSheet)
+		formatAssemblyOrderSheet(newSheet)
 
 	workBook.remove(templateSheet)
 	workBook.save(ASSEMBLY_ORDER_FILE_PATH)
@@ -128,7 +138,7 @@ def calculateDataElementRow(dataElementType, currentRow):
 
 	return currentRow
 
-def formatSheet(sheet):
+def formatAssemblyOrderSheet(sheet):
 	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
 	addSingleRowBoxBorder(sheet, 7, 1, 8)
 
