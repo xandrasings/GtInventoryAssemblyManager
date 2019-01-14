@@ -79,21 +79,27 @@ def assertComponentMax(productDictionary):
 def generateAssemblyOrderFile(taskList):
 	createAssemblyOrderFile()
 	try:
-		populateAssemblyOrderFile(taskList)
-		fileName = renameAssemblyOrderFile()
+		workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
+		populateAssemblyOrderFile(workBook, taskList)
+		fileName = saveAndRenameWorkbook(workBook)
 		print('Successfully generated assembly order file: ' + fileName)
 	except Exception as e:
 		print('Something went wrong! Cancelling process.')
+		print('\n\n\nerror detail:')
 		print(e)
+		print('\n\n\n')
 		deleteAssemblyOrderFile()
 		quit()
 
 
-def populateAssemblyOrderFile(taskList):
-	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
+def saveAndRenameWorkbook(workBook):
+		workBook.save(ASSEMBLY_ORDER_FILE_PATH)
+		return renameAssemblyOrderFile()
+
+
+def populateAssemblyOrderFile(workBook, taskList):
 	populateCopyrightPage(workBook)
 	populateAssemblyOrderPages(workBook, taskList)
-	workBook.save(ASSEMBLY_ORDER_FILE_PATH)
 
 
 def populateCopyrightPage(workBook):
@@ -182,6 +188,11 @@ def leftAlignAssemblyOrderNumbers(sheet):
 
 def assignPageMargins(sheet, pageMargins):
 	sheet.page_margins = pageMargins
+	sheet.print_options.horizontalCentered = True
+
+
+def assignPrintArea(sheet):
+	sheet.print_area = PRINT_AREA
 
 
 def formatAssemblyOrderSheet(sheet, pageMargins):
@@ -190,3 +201,4 @@ def formatAssemblyOrderSheet(sheet, pageMargins):
 	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
 	leftAlignAssemblyOrderNumbers(sheet)
 	assignPageMargins(sheet, pageMargins)
+	assignPrintArea(sheet)

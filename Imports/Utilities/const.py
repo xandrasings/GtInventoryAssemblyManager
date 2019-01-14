@@ -87,6 +87,7 @@ dataElementColumnBorderOffset = {
 	QUANTITY: 1
 }
 
+PRINT_AREA = 'A1:G33'
 TOP = 'top'
 BOTTOM = 'bottom'
 LEFT = 'left'
@@ -97,8 +98,8 @@ FOOTER = 'footer'
 margin = {
 	TOP: 1,
 	BOTTOM: 1,
-	LEFT: .75,
-	RIGHT: .75,
-	HEADER: .5,
-	FOOTER: .5
+	LEFT: .25,
+	RIGHT: .25,
+	HEADER: .25,
+	FOOTER: .25
 }
