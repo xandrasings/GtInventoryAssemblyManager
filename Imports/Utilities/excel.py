@@ -33,7 +33,7 @@ def generateTaskList():
 	taskSheet = workBook[TASK_FILE_TASK_SHEET]
 	productDictionary = generateProductDictionary(workBook)
 
-	for i in range(2, taskSheet.max_row):
+	for i in range(2, taskSheet.max_row + 1):
 		product = str(taskSheet.cell(row = i, column = TASK_LIST_PRODUCT_COLUMN).value)
 		if product == "None":
 			break
