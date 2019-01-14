@@ -48,7 +48,7 @@ def generateProductDictionary(workBook):
 	componentSheet = workBook[TASK_FILE_COMPONENTS_SHEET]
 	verifyComponentSheetFormatting(componentSheet)
 	productDictionary = {}
-	for i in range(2, componentSheet.max_row):
+	for i in range(2, componentSheet.max_row + 1):
 		product = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PRODUCT_COLUMN).value)
 		part = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PART_COLUMN).value)
 		quantity = componentSheet.cell(row = i, column = COMPONENT_LIST_QUANTITY_COLUMN).value
