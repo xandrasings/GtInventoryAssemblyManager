@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
 from openpyxl.styles import Alignment
 from openpyxl.styles.borders import Border, Side
-
+from openpyxl.worksheet.page import PageMargins
 
 import os
 
@@ -82,8 +82,9 @@ def generateAssemblyOrderFile(taskList):
 		populateAssemblyOrderFile(taskList)
 		fileName = renameAssemblyOrderFile()
 		print('Successfully generated assembly order file: ' + fileName)
-	except:
+	except Exception as e:
 		print('Something went wrong! Cancelling process.')
+		print(e)
 		deleteAssemblyOrderFile()
 		quit()
 
@@ -92,6 +93,7 @@ def populateAssemblyOrderFile(taskList):
 	workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
 	populateCopyrightPage(workBook)
 	populateAssemblyOrderPages(workBook, taskList)
+	workBook.save(ASSEMBLY_ORDER_FILE_PATH)
 
 
 def populateCopyrightPage(workBook):
@@ -107,6 +109,7 @@ def populateAssemblyOrderPages(workBook, taskList):
 		product = taskList[i].getProduct()
 		newSheet = workBook.copy_worksheet(templateSheet)
 		newSheet.title = generateSheetName(i, product)
+		pageMargins = PageMargins(top = margin[TOP], bottom = margin[BOTTOM], left = margin[LEFT], right = margin[RIGHT], header = margin[HEADER], footer = margin[FOOTER])
 
 		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
 		populateCell(newSheet, PRODUCT, product)
@@ -117,10 +120,8 @@ def populateAssemblyOrderPages(workBook, taskList):
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
 			currentRow = currentRow + 1
-		formatAssemblyOrderSheet(newSheet)
-
+		formatAssemblyOrderSheet(newSheet, pageMargins)
 	workBook.remove(templateSheet)
-	workBook.save(ASSEMBLY_ORDER_FILE_PATH)
 	
 
 def generateSheetName(counter, product):
@@ -132,12 +133,12 @@ def generateFraction(counter, total):
 
 
 def populateCell(sheet, dataElementType, value, currentRow = None):
-	sheet.cell(row = calculateDataElementRow(dataElementType, currentRow), column = getDataElementColumn[dataElementType]).value = value;
+	sheet.cell(row = calculateDataElementRow(dataElementType, currentRow), column = dataElementColumn[dataElementType]).value = value;
 
 
 def calculateDataElementRow(dataElementType, currentRow):
 	if dataElementType not in [PART, PART_QUANTITY]:
-		currentRow = getDataElementRow[dataElementType]
+		currentRow = dataElementRow[dataElementType]
 
 	if currentRow == None:
 		print('Encountered error calculating target row for ' + dataElementType)
@@ -145,16 +146,20 @@ def calculateDataElementRow(dataElementType, currentRow):
 
 	return currentRow
 
-def formatAssemblyOrderSheet(sheet):
-	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
-	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
-	leftAlignAssemblyOrderNumbers(sheet)
-
 
 def addImage(sheet, imagePath, targetCell):
 	image = Image(imagePath)
-	# image.anchor(sheet.cell(row = targetRow, column = targetColumn))
 	sheet.add_image(image, targetCell)
+
+
+def addProductAndQuantityUnderline(sheet):
+	for dataElementType in [PRODUCT, QUANTITY]:
+		addUnderline(sheet, dataElementRow[dataElementType] + dataElementRowBorderOffset[dataElementType], dataElementColumn[dataElementType] + dataElementColumnBorderOffset[dataElementType])
+
+
+def addUnderline(sheet, targetRow, targetColumn):
+	border = Border(bottom = Side(style='thin', color='00000000'))
+	sheet.cell(row = targetRow, column = targetColumn).border = border
 
 
 def addSingleRowBoxBorder(sheet, targetRow, start, stop):
@@ -171,8 +176,17 @@ def addSingleRowBoxBorder(sheet, targetRow, start, stop):
 
 def leftAlignAssemblyOrderNumbers(sheet):
 	for targetRow in range (PRODUCT_COMPONENT_START_ROW, PRODUCT_COMPONENT_START_ROW + PRODUCT_COMPONENT_MAX):
-		sheet.cell(row = targetRow, column = PRODUCT_COMPONENT_LIST_PACKAGE_QUANTITY_COLUMN).alignment = Alignment(horizontal = 'left')
-		sheet.cell(row = targetRow, column = PRODUCT_COMPONENT_LIST_ORDER_QUANTITY_COLUMN).alignment = Alignment(horizontal = 'left')
+		sheet.cell(row = targetRow, column = dataElementColumn[PART_QUANTITY]).alignment = Alignment(horizontal = 'left')
+		sheet.cell(row = targetRow, column = dataElementColumn[ORDER_QUANTITY]).alignment = Alignment(horizontal = 'left')
 
 
+def assignPageMargins(sheet, pageMargins):
+	sheet.page_margins = pageMargins
 
+
+def formatAssemblyOrderSheet(sheet, pageMargins):
+	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
+	addProductAndQuantityUnderline(sheet)
+	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
+	leftAlignAssemblyOrderNumbers(sheet)
+	assignPageMargins(sheet, pageMargins)

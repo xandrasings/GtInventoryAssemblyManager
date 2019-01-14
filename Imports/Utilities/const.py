@@ -47,7 +47,7 @@ COMPONENT_LIST_PRODUCT_COLUMN = 1
 COMPONENT_LIST_PART_COLUMN = 2
 COMPONENT_LIST_QUANTITY_COLUMN = 3
 
-PRODUCT_COMPONENT_START_ROW = 8
+PRODUCT_COMPONENT_START_ROW = 7
 PRODUCT_COMPONENT_MAX = 26
 PRODUCT_COMPONENT_LIST_START_COLUMN = 1
 PRODUCT_COMPONENT_LIST_END_COLUMN = 7
@@ -60,17 +60,45 @@ FRACTION = 'fraction'
 QUANTITY = 'quantity'
 PART = 'part'
 PART_QUANTITY = 'part_quantity'
+ORDER_QUANTITY = 'order_quantity'
 
-getDataElementRow = {
-	FRACTION : 1,
-	PRODUCT : 2,
-	QUANTITY : 4
+dataElementRow = {
+	FRACTION: 1,
+	PRODUCT: 2,
+	QUANTITY: 4
 }
 
-getDataElementColumn = {
-	FRACTION : 7,
-	PRODUCT : 4,
-	QUANTITY : 4,
-	PART : 1,
-	PART_QUANTITY : 4
+dataElementColumn = {
+	FRACTION: 7,
+	PRODUCT: 2,
+	QUANTITY: 2,
+	PART: 1,
+	PART_QUANTITY: 4,
+	ORDER_QUANTITY: 7
+}
+
+dataElementRowBorderOffset = {
+	PRODUCT: 1,
+	QUANTITY: 0
+}
+
+dataElementColumnBorderOffset = {
+	PRODUCT: 1,
+	QUANTITY: 1
+}
+
+TOP = 'top'
+BOTTOM = 'bottom'
+LEFT = 'left'
+RIGHT = 'right'
+HEADER = 'header'
+FOOTER = 'footer'
+
+margin = {
+	TOP: 1,
+	BOTTOM: 1,
+	LEFT: .75,
+	RIGHT: .75,
+	HEADER: .5,
+	FOOTER: .5
 }
