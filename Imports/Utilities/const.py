@@ -58,20 +58,23 @@ PRODUCT_COMPONENT_LIST_ORDER_QUANTITY_COLUMN = 7
 PRODUCT = 'product'
 FRACTION = 'fraction'
 QUANTITY = 'quantity'
+FILE_NAME = 'fileName'
 PART = 'part'
-PART_QUANTITY = 'part_quantity'
-ORDER_QUANTITY = 'order_quantity'
+PART_QUANTITY = 'partQuantity'
+ORDER_QUANTITY = 'orderQuantity'
 
 dataElementRow = {
 	FRACTION: 1,
 	PRODUCT: 2,
-	QUANTITY: 4
+	QUANTITY: 4,
+	FILE_NAME: 33
 }
 
 dataElementColumn = {
 	FRACTION: 7,
 	PRODUCT: 2,
 	QUANTITY: 2,
+	FILE_NAME: 1,
 	PART: 1,
 	PART_QUANTITY: 4,
 	ORDER_QUANTITY: 7

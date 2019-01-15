@@ -80,8 +80,9 @@ def generateAssemblyOrderFile(taskList):
 	createAssemblyOrderFile()
 	try:
 		workBook = loadWorkbook(TEMPLATE, ASSEMBLY_ORDER_FILE_PATH)
-		populateAssemblyOrderFile(workBook, taskList)
-		fileName = saveAndRenameWorkbook(workBook)
+		fileName = generateAssemblyOrderFileName()
+		populateAssemblyOrderFile(workBook, taskList, fileName)
+		saveAndRenameWorkbook(workBook, fileName)
 		print('Successfully generated assembly order file: ' + fileName)
 	except Exception as e:
 		print('Something went wrong! Cancelling process.')
@@ -92,14 +93,14 @@ def generateAssemblyOrderFile(taskList):
 		quit()
 
 
-def saveAndRenameWorkbook(workBook):
+def saveAndRenameWorkbook(workBook, fileName):
 		workBook.save(ASSEMBLY_ORDER_FILE_PATH)
-		return renameAssemblyOrderFile()
+		return renameAssemblyOrderFile(fileName)
 
 
-def populateAssemblyOrderFile(workBook, taskList):
+def populateAssemblyOrderFile(workBook, taskList, fileName):
 	populateCopyrightPage(workBook)
-	populateAssemblyOrderPages(workBook, taskList)
+	populateAssemblyOrderPages(workBook, taskList, fileName)
 
 
 def populateCopyrightPage(workBook):
@@ -107,7 +108,7 @@ def populateCopyrightPage(workBook):
 	addImage(copyrightSheet, VERTEX_IMAGE_FILE_PATH, 'B3')
 
 
-def populateAssemblyOrderPages(workBook, taskList):
+def populateAssemblyOrderPages(workBook, taskList, fileName):
 	templateSheet = workBook[TEMPLATE_FILE_TEMPLATE_SHEET]
 	taskCount = len(taskList)
 
@@ -120,6 +121,7 @@ def populateAssemblyOrderPages(workBook, taskList):
 		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
 		populateCell(newSheet, PRODUCT, product)
 		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
+		populateCell(newSheet, FILE_NAME, fileName)
 
 		currentRow = PRODUCT_COMPONENT_START_ROW
 		for component in taskList[i].getComponents():

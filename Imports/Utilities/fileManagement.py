@@ -94,8 +94,7 @@ def createAssemblyOrderFile():
 	shutil.copy2(TEMPLATE_FILE_NAME_PATH, ASSEMBLY_ORDERS_DIR_PATH)
 
 
-def renameAssemblyOrderFile():
-	fileName = generateAssemblyOrderFileName()
+def renameAssemblyOrderFile(fileName):
 	shutil.move(ASSEMBLY_ORDER_FILE_PATH, generateAssemblyOrderFilePath(fileName))
 	return fileName
 
