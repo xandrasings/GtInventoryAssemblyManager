@@ -1,7 +1,6 @@
 from .const import *
 from .dateTime import *
 from .sys import *
-from .userInteraction import *
 
 from os import listdir
 
@@ -55,9 +54,9 @@ def solicitPathOptionIndex(validOptions):
 def printFileOptions(pathContent):
 	i = 1
 	for item in list(pathContent):
-		printOption('- (' + str(i) + ') ' + item)
+		print('- (' + str(i) + ') ' + item)
 		i = i + 1
-	printOption('- (Q)uit')
+	print('- (Q)uit')
 
 
 def getPathIndex(validOptions):
@@ -65,7 +64,7 @@ def getPathIndex(validOptions):
 	maxInput = len(validOptions)
 
 	while fileIndex < 0:
-		inputIndex = prompt()
+		inputIndex = input(' > ').upper()
 		try:
 			fileIndex = int(inputIndex) - 1
 			if fileIndex < 0 or fileIndex >= maxInput:
