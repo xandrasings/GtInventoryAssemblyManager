@@ -93,8 +93,8 @@ def populateProductDictionary(workBook, productDictionary):
 
 def assertComponentMax(productDictionary):
 	for product in productDictionary:
-		if len(productDictionary[product].getComponents()) > PRODUCT_COMPONENT_LIST_MAX:
-			print('Product ' + product + ' has over the max (' + str(PRODUCT_COMPONENT_LIST_MAX) + ') of assembly components.')
+		if len(productDictionary[product].getComponents()) > dataElementInfo[COMPONENT_LIST][MAX]:
+			print('Product ' + product + ' has over the max (' + str(dataElementInfo[COMPONENT_LIST][MAX]) + ') of assembly components.')
 			quit()
 
 
@@ -146,7 +146,7 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getTimeEstimate())
 		populateCell(newSheet, FILE_NAME, fileName)
 
-		currentRow = PRODUCT_COMPONENT_LIST_START_ROW
+		currentRow = dataElementInfo[COMPONENT_LIST][ROW]
 		for component in taskList[i].getComponents():
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
@@ -185,8 +185,8 @@ def addImage(sheet, imagePath, targetCell):
 
 def addSkippyUnderlines(sheet):
 	for dataElementType in [PRODUCT, QUANTITY, USER_INPUT_LINE_A, USER_INPUT_LINE_B]:
-		addUnderline(sheet, dataElementInfo[dataElementType][ROW], dataElementInfo[dataElementType][COLUMN], dataElementInfo[dataElementType][COLUMN_BORDER_OFFSET])
-	addUnderline(sheet, PRODUCT_COMPONENT_LIST_START_ROW + PRODUCT_COMPONENT_LIST_MAX, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN - 1)
+		addUnderline(sheet, dataElementInfo[dataElementType][ROW], dataElementInfo[dataElementType][COLUMN], dataElementInfo[dataElementType][COLUMN_OFFSET])
+	addUnderline(sheet, dataElementInfo[COMPONENT_LIST][ROW] + dataElementInfo[COMPONENT_LIST][MAX], dataElementInfo[COMPONENT_LIST][COLUMN], dataElementInfo[COMPONENT_LIST][COLUMN_OFFSET])
 
 
 def addUnderline(sheet, targetRow, targetColumnStart, columnOffset = 0):
@@ -208,7 +208,7 @@ def addSingleRowBoxBorder(sheet, targetRow, start, stop):
 
 
 def leftAlignAssemblyOrderNumbers(sheet):
-	for targetRow in range (PRODUCT_COMPONENT_LIST_START_ROW, PRODUCT_COMPONENT_LIST_START_ROW + PRODUCT_COMPONENT_LIST_MAX):
+	for targetRow in range (dataElementInfo[COMPONENT_LIST][ROW], dataElementInfo[COMPONENT_LIST][ROW] + dataElementInfo[COMPONENT_LIST][MAX]):
 		sheet.cell(row = targetRow, column = dataElementInfo[PART_QUANTITY][COLUMN]).alignment = Alignment(horizontal = 'left')
 		sheet.cell(row = targetRow, column = dataElementInfo[ORDER_QUANTITY][COLUMN]).alignment = Alignment(horizontal = 'left')
 
@@ -225,7 +225,7 @@ def assignPrintArea(sheet):
 def formatAssemblyOrderSheet(sheet, pageMargins):
 	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
 	addSkippyUnderlines(sheet)
-	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_LIST_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
+	addSingleRowBoxBorder(sheet, dataElementInfo[COMPONENT_LIST][ROW] - 1, dataElementInfo[COMPONENT_LIST][COLUMN], dataElementInfo[COMPONENT_LIST][COLUMN] + dataElementInfo[COMPONENT_LIST][COLUMN_OFFSET] + 1)
 	leftAlignAssemblyOrderNumbers(sheet)
 	assignPageMargins(sheet, pageMargins)
 	assignPrintArea(sheet)
