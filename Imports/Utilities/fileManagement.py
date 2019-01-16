@@ -32,7 +32,8 @@ def getValidTaskFiles():
 		if isValidExcelFile(item):
 			validFiles.append(item)
 
-	return validFiles
+	return sorted(validFiles, reverse = True)
+
 
 def isValidExcelFile(item):
 	return (
