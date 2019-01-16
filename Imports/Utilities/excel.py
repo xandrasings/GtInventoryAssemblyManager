@@ -183,14 +183,16 @@ def addImage(sheet, imagePath, targetCell):
 	sheet.add_image(image, targetCell)
 
 
-def addProductAndQuantityUnderline(sheet):
-	for dataElementType in [PRODUCT, QUANTITY]:
-		addUnderline(sheet, dataElementInfo[dataElementType][ROW] + dataElementInfo[dataElementType][ROW_BORDER_OFFSET], dataElementInfo[dataElementType][COLUMN] + dataElementInfo[dataElementType][COLUMN_BORDER_OFFSET])
+def addSkippyUnderlines(sheet):
+	for dataElementType in [PRODUCT, QUANTITY, USER_INPUT_LINE_A, USER_INPUT_LINE_B]:
+		addUnderline(sheet, dataElementInfo[dataElementType][ROW], dataElementInfo[dataElementType][COLUMN], dataElementInfo[dataElementType][COLUMN_BORDER_OFFSET])
+	addUnderline(sheet, PRODUCT_COMPONENT_LIST_START_ROW + PRODUCT_COMPONENT_LIST_MAX, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN - 1)
 
 
-def addUnderline(sheet, targetRow, targetColumn):
+def addUnderline(sheet, targetRow, targetColumnStart, columnOffset = 0):
 	border = Border(bottom = Side(style='thin', color='00000000'))
-	sheet.cell(row = targetRow, column = targetColumn).border = border
+	for targetColumn in range(targetColumnStart, targetColumnStart + columnOffset):
+		sheet.cell(row = targetRow, column = targetColumn).border = border
 
 
 def addSingleRowBoxBorder(sheet, targetRow, start, stop):
@@ -222,7 +224,7 @@ def assignPrintArea(sheet):
 
 def formatAssemblyOrderSheet(sheet, pageMargins):
 	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
-	addProductAndQuantityUnderline(sheet)
+	addSkippyUnderlines(sheet)
 	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_LIST_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
 	leftAlignAssemblyOrderNumbers(sheet)
 	assignPageMargins(sheet, pageMargins)
