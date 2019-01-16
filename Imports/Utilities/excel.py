@@ -1,4 +1,4 @@
-from .const import *
+from .constants import *
 from .fileManagement import *
 from .sys import *
 from ..Classes.Component import *
@@ -49,7 +49,7 @@ def generateTaskList():
 
 	for i in range(2, taskSheet.max_row + 1):
 		product = str(taskSheet.cell(row = i, column = TASK_LIST_PRODUCT_COLUMN).value)
-		if product == "None":
+		if product == 'None':
 			break
 		quantity = taskSheet.cell(row = i, column = TASK_LIST_QUANTITY_COLUMN).value
 
@@ -156,11 +156,11 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 	
 
 def generateSheetName(counter, product):
-	return str(counter + 1) + " " + product[:27]
+	return str(counter + 1) + ' ' + product[:27]
 
 
 def generateFraction(counter, total):
-	return str(counter + 1) + "/" + str(total)
+	return str(counter + 1) + '/' + str(total)
 
 
 def populateCell(sheet, dataElementType, value, currentRow = None):

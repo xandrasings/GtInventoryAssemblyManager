@@ -1,4 +1,4 @@
-from .const import *
+from .constants import *
 from .dateTime import *
 from .sys import *
 
@@ -89,7 +89,7 @@ def generateAssemblyOrderFilePath(fileName):
 
 def createAssemblyOrderFile():
 	if not os.path.exists(TEMPLATE_FILE_NAME_PATH):
-		print("Template file does not exist at " + TEMPLATE_FILE_NAME_PATH)
+		print('Template file does not exist at ' + TEMPLATE_FILE_NAME_PATH)
 		quit()
 	shutil.copy2(TEMPLATE_FILE_NAME_PATH, ASSEMBLY_ORDERS_DIR_PATH)
 
