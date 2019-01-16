@@ -93,8 +93,8 @@ def populateProductDictionary(workBook, productDictionary):
 
 def assertComponentMax(productDictionary):
 	for product in productDictionary:
-		if len(productDictionary[product].getComponents()) > PRODUCT_COMPONENT_MAX:
-			print('Product ' + product + ' has over the max (' + str(PRODUCT_COMPONENT_MAX) + ') of assembly components.')
+		if len(productDictionary[product].getComponents()) > PRODUCT_COMPONENT_LIST_MAX:
+			print('Product ' + product + ' has over the max (' + str(PRODUCT_COMPONENT_LIST_MAX) + ') of assembly components.')
 			quit()
 
 
@@ -146,7 +146,7 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getTimeEstimate())
 		populateCell(newSheet, FILE_NAME, fileName)
 
-		currentRow = PRODUCT_COMPONENT_START_ROW
+		currentRow = PRODUCT_COMPONENT_LIST_START_ROW
 		for component in taskList[i].getComponents():
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
@@ -164,12 +164,12 @@ def generateFraction(counter, total):
 
 
 def populateCell(sheet, dataElementType, value, currentRow = None):
-	sheet.cell(row = calculateDataElementRow(dataElementType, currentRow), column = dataElementColumn[dataElementType]).value = value;
+	sheet.cell(row = calculateDataElementRow(dataElementType, currentRow), column = dataElementInfo[dataElementType][COLUMN]).value = value;
 
 
 def calculateDataElementRow(dataElementType, currentRow):
 	if dataElementType not in [PART, PART_QUANTITY]:
-		currentRow = dataElementRow[dataElementType]
+		currentRow = dataElementInfo[dataElementType][ROW]
 
 	if currentRow == None:
 		print('Encountered error calculating target row for ' + dataElementType)
@@ -185,7 +185,7 @@ def addImage(sheet, imagePath, targetCell):
 
 def addProductAndQuantityUnderline(sheet):
 	for dataElementType in [PRODUCT, QUANTITY]:
-		addUnderline(sheet, dataElementRow[dataElementType] + dataElementRowBorderOffset[dataElementType], dataElementColumn[dataElementType] + dataElementColumnBorderOffset[dataElementType])
+		addUnderline(sheet, dataElementInfo[dataElementType][ROW] + dataElementInfo[dataElementType][ROW_BORDER_OFFSET], dataElementInfo[dataElementType][COLUMN] + dataElementInfo[dataElementType][COLUMN_BORDER_OFFSET])
 
 
 def addUnderline(sheet, targetRow, targetColumn):
@@ -206,9 +206,9 @@ def addSingleRowBoxBorder(sheet, targetRow, start, stop):
 
 
 def leftAlignAssemblyOrderNumbers(sheet):
-	for targetRow in range (PRODUCT_COMPONENT_START_ROW, PRODUCT_COMPONENT_START_ROW + PRODUCT_COMPONENT_MAX):
-		sheet.cell(row = targetRow, column = dataElementColumn[PART_QUANTITY]).alignment = Alignment(horizontal = 'left')
-		sheet.cell(row = targetRow, column = dataElementColumn[ORDER_QUANTITY]).alignment = Alignment(horizontal = 'left')
+	for targetRow in range (PRODUCT_COMPONENT_LIST_START_ROW, PRODUCT_COMPONENT_LIST_START_ROW + PRODUCT_COMPONENT_LIST_MAX):
+		sheet.cell(row = targetRow, column = dataElementInfo[PART_QUANTITY][COLUMN]).alignment = Alignment(horizontal = 'left')
+		sheet.cell(row = targetRow, column = dataElementInfo[ORDER_QUANTITY][COLUMN]).alignment = Alignment(horizontal = 'left')
 
 
 def assignPageMargins(sheet, pageMargins):
@@ -223,7 +223,7 @@ def assignPrintArea(sheet):
 def formatAssemblyOrderSheet(sheet, pageMargins):
 	addImage(sheet, GLACIER_TEK_IMAGE_FILE_PATH, 'A1')
 	addProductAndQuantityUnderline(sheet)
-	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
+	addSingleRowBoxBorder(sheet, PRODUCT_COMPONENT_LIST_START_ROW - 1, PRODUCT_COMPONENT_LIST_START_COLUMN, PRODUCT_COMPONENT_LIST_END_COLUMN + 1)
 	leftAlignAssemblyOrderNumbers(sheet)
 	assignPageMargins(sheet, pageMargins)
 	assignPrintArea(sheet)
