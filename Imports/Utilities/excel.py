@@ -2,6 +2,7 @@ from .const import *
 from .fileManagement import *
 from .sys import *
 from ..Classes.Component import *
+from ..Classes.Product import *
 from ..Classes.Task import *
 
 from openpyxl import load_workbook
@@ -17,6 +18,19 @@ def loadWorkbook(fileType, filePath, readOnly = False):
 	workBook = load_workbook(filePath, readOnly)
 	assertExpectedWorkSheets(fileType, workBook)
 	return workBook
+
+
+def openSheet(workBook, sheetType):
+	sheet = workBook[sheetType]
+	verifySheetFormatting(sheet, sheetType)
+	return sheet
+
+
+def verifySheetFormatting(sheet, sheetType):
+	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
+	# TODO assert column headers are as expected
+	# TODO use regex to assert expected formatting of rows
+	pass
 
 
 def assertExpectedWorkSheets(fileType, workBook):
@@ -38,40 +52,48 @@ def generateTaskList():
 		if product == "None":
 			break
 		quantity = taskSheet.cell(row = i, column = TASK_LIST_QUANTITY_COLUMN).value
-		components = productDictionary[product]
-		taskList.append(Task(product, quantity, components))
+
+		taskList.append(Task(i - 1, productDictionary[product], quantity))
 
 	return taskList
 
 
 def generateProductDictionary(workBook):
-	componentSheet = workBook[TASK_FILE_COMPONENTS_SHEET]
-	verifyComponentSheetFormatting(componentSheet)
+	productDictionary = generateEmptyProductDictionary(workBook)
+	return populateProductDictionary(workBook, productDictionary)
+
+
+def generateEmptyProductDictionary(workBook):
+	productSheet = openSheet(workBook, TASK_FILE_PRODUCTS_SHEET)
 	productDictionary = {}
+
+	for i in range(2, productSheet.max_row + 1):
+		name = str(productSheet.cell(row = i, column = PRODUCT_LIST_PRODUCT_COLUMN).value)
+		timeEstimate = productSheet.cell(row = i, column = PRODUCT_LIST_TIME_ESTIMATE_COLUMN).value
+
+		if name not in productDictionary.keys():
+			productDictionary[name] = Product(name, timeEstimate)
+
+	return productDictionary
+
+
+def populateProductDictionary(workBook, productDictionary):
+	componentSheet = openSheet(workBook, TASK_FILE_COMPONENTS_SHEET)
+
 	for i in range(2, componentSheet.max_row + 1):
 		product = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PRODUCT_COLUMN).value)
 		part = str(componentSheet.cell(row = i, column = COMPONENT_LIST_PART_COLUMN).value)
 		quantity = componentSheet.cell(row = i, column = COMPONENT_LIST_QUANTITY_COLUMN).value
-
-		if product not in productDictionary.keys():
-			productDictionary[product] = []
-
-		productDictionary[product].append(Component(part, quantity))
+		
+		productDictionary[product].addComponent(Component(part, quantity))
 
 	assertComponentMax(productDictionary)
 	return productDictionary
 
 
-def verifyComponentSheetFormatting(sheet):
-	# TODO assert worksheet dimensions from ws.calculate_dimension() sheet.get_highest_column()
-	# TODO assert column headers are as expected
-	# TODO use regex to assert expected formatting of rows
-	pass
-
-
 def assertComponentMax(productDictionary):
 	for product in productDictionary:
-		if len(productDictionary[product]) > PRODUCT_COMPONENT_MAX:
+		if len(productDictionary[product].getComponents()) > PRODUCT_COMPONENT_MAX:
 			print('Product ' + product + ' has over the max (' + str(PRODUCT_COMPONENT_MAX) + ') of assembly components.')
 			quit()
 
@@ -115,12 +137,13 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 	for i in range (0, taskCount):
 		product = taskList[i].getProduct()
 		newSheet = workBook.copy_worksheet(templateSheet)
-		newSheet.title = generateSheetName(i, product)
+		newSheet.title = generateSheetName(i, product.getName())
 		pageMargins = PageMargins(top = margin[TOP], bottom = margin[BOTTOM], left = margin[LEFT], right = margin[RIGHT], header = margin[HEADER], footer = margin[FOOTER])
 
 		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
-		populateCell(newSheet, PRODUCT, product)
+		populateCell(newSheet, PRODUCT, product.getName())
 		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
+		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getTimeEstimate())
 		populateCell(newSheet, FILE_NAME, fileName)
 
 		currentRow = PRODUCT_COMPONENT_START_ROW
