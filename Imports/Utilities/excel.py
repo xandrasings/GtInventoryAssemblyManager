@@ -190,15 +190,15 @@ def addSkippyUnderlines(sheet):
 
 
 def addUnderline(sheet, targetRow, targetColumnStart, columnOffset = 0):
-	border = Border(bottom = Side(style='thin', color='00000000'))
+	border = Border(bottom = Side(style = 'thin', color = '00000000'))
 	for targetColumn in range(targetColumnStart, targetColumnStart + columnOffset):
 		sheet.cell(row = targetRow, column = targetColumn).border = border
 
 
 def addSingleRowBoxBorder(sheet, targetRow, start, stop):
-	border = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'))
-	leftEndBorder = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'), left = Side(style='thin', color='00000000'))
-	rightEndBorder = Border(top = Side(style='thin', color='00000000'), bottom = Side(style='thin', color='00000000'), right = Side(style='thin', color='00000000'))
+	border = Border(top = Side(style = 'thin', color = '00000000'), bottom = Side(style = 'thin', color = '00000000'))
+	leftEndBorder = Border(top = Side(style = 'thin', color = '00000000'), bottom = Side(style = 'thin', color = '00000000'), left = Side(style = 'thin', color = '00000000'))
+	rightEndBorder = Border(top = Side(style = 'thin', color = '00000000'), bottom = Side(style = 'thin', color = '00000000'), right = Side(style = 'thin', color = '00000000'))
 	
 	for targetColumn in range(start + 1, stop - 1):
 		sheet.cell(row = targetRow, column = targetColumn).border = border
