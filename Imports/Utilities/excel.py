@@ -143,7 +143,7 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
 		populateCell(newSheet, PRODUCT, product.getName())
 		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
-		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getTimeEstimate())
+		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getReadableTimeEstimate())
 		populateCell(newSheet, FILE_NAME, fileName)
 
 		currentRow = dataElementInfo[COMPONENT_LIST][ROW]

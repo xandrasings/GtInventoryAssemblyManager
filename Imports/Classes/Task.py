@@ -23,6 +23,9 @@ class Task:
 	def getTimeEstimate(self):
 		return self.timeEstimate
 
+	def getReadableTimeEstimate(self):
+		return summarizeTimeEstimate(self.timeEstimate)
+
 	def summarize(self):
 		return "{index: " + str(self.index) + ", product: " + self.product.summarize() + ", quantity: " + str(self.quantity) + ", time estimate: " + self.timeEstimate + "]}"
 		return summarize
