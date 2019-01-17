@@ -119,7 +119,9 @@ dataElementInfo = {
 	}
 }
 
-PRINT_AREA = 'A1:G33'
+TIME_THRESHOLD = 4
+
+PRINT_AREA = 'A1:F33'
 TOP = 'top'
 BOTTOM = 'bottom'
 LEFT = 'left'

@@ -1,5 +1,6 @@
 from .Component import *
 from .Helpers.TaskHelper import *
+from ..Utilities.constants import *
 
 class Task:
 	def __init__(self, index, product, quantity):
@@ -7,6 +8,18 @@ class Task:
 		self.product = product
 		self.quantity = quantity
 		self.timeEstimate = calculateTimeEstimate(product.getTimeEstimate(), quantity)
+
+	def __eq__(self, other):
+		return self.index == other.index and self.isBelowThreshold() == other.isBelowThreshold()
+
+	def __lt__(self, other):
+		if self.isBelowThreshold() == other.isBelowThreshold():
+			return self.getIndex() < other.getIndex()
+		else:
+			return self.isBelowThreshold()
+
+	def isBelowThreshold(self):
+		return (self.timeEstimate < TIME_THRESHOLD)
 
 	def getIndex(self):
 		return self.index
@@ -27,5 +40,5 @@ class Task:
 		return summarizeTimeEstimate(self.timeEstimate)
 
 	def summarize(self):
-		return "{index: " + str(self.index) + ", product: " + self.product.summarize() + ", quantity: " + str(self.quantity) + ", time estimate: " + self.timeEstimate + "]}"
+		return "{index: " + str(self.index) + ", product: " + self.product.summarize() + ", quantity: " + str(self.quantity) + ", time estimate: " + str(self.timeEstimate) + " or " + self.getReadableTimeEstimate() + "}"
 		return summarize

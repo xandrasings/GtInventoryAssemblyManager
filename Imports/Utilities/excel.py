@@ -55,7 +55,7 @@ def generateTaskList():
 
 		taskList.append(Task(i - 1, productDictionary[product], quantity))
 
-	return taskList
+	return sorted(taskList)
 
 
 def generateProductDictionary(workBook):
@@ -134,20 +134,20 @@ def populateAssemblyOrderPages(workBook, taskList, fileName):
 	templateSheet = workBook[TEMPLATE_FILE_TEMPLATE_SHEET]
 	taskCount = len(taskList)
 
-	for i in range (0, taskCount):
-		product = taskList[i].getProduct()
+	for task in taskList:
+		product = task.getProduct()
 		newSheet = workBook.copy_worksheet(templateSheet)
-		newSheet.title = generateSheetName(i, product.getName())
+		newSheet.title = generateSheetName(task.getIndex(), product.getName())
 		pageMargins = PageMargins(top = margin[TOP], bottom = margin[BOTTOM], left = margin[LEFT], right = margin[RIGHT], header = margin[HEADER], footer = margin[FOOTER])
 
-		populateCell(newSheet, FRACTION, generateFraction(i, taskCount))
+		populateCell(newSheet, FRACTION, generateFraction(task.getIndex(), taskCount))
 		populateCell(newSheet, PRODUCT, product.getName())
-		populateCell(newSheet, QUANTITY, taskList[i].getQuantity())
-		populateCell(newSheet, TIME_ESTIMATE, taskList[i].getReadableTimeEstimate())
+		populateCell(newSheet, QUANTITY, task.getQuantity())
+		populateCell(newSheet, TIME_ESTIMATE, task.getReadableTimeEstimate())
 		populateCell(newSheet, FILE_NAME, fileName)
 
 		currentRow = dataElementInfo[COMPONENT_LIST][ROW]
-		for component in taskList[i].getComponents():
+		for component in task.getComponents():
 			populateCell(newSheet, PART, component.getPart(), currentRow)
 			populateCell(newSheet, PART_QUANTITY, component.getQuantity(), currentRow)
 			currentRow = currentRow + 1
@@ -159,8 +159,8 @@ def generateSheetName(counter, product):
 	return str(counter + 1) + ' ' + product[:27]
 
 
-def generateFraction(counter, total):
-	return str(counter + 1) + '/' + str(total)
+def generateFraction(index, total):
+	return str(index) + '/' + str(total)
 
 
 def populateCell(sheet, dataElementType, value, currentRow = None):
@@ -186,7 +186,7 @@ def addImage(sheet, imagePath, targetCell):
 def addSkippyUnderlines(sheet):
 	for dataElementType in [PRODUCT, QUANTITY, USER_INPUT_LINE_A, USER_INPUT_LINE_B]:
 		addUnderline(sheet, dataElementInfo[dataElementType][ROW], dataElementInfo[dataElementType][COLUMN], dataElementInfo[dataElementType][COLUMN_OFFSET])
-	addUnderline(sheet, dataElementInfo[COMPONENT_LIST][ROW] + dataElementInfo[COMPONENT_LIST][MAX], dataElementInfo[COMPONENT_LIST][COLUMN], dataElementInfo[COMPONENT_LIST][COLUMN_OFFSET])
+	addUnderline(sheet, dataElementInfo[COMPONENT_LIST][ROW] + dataElementInfo[COMPONENT_LIST][MAX], dataElementInfo[COMPONENT_LIST][COLUMN] + 1, dataElementInfo[COMPONENT_LIST][COLUMN_OFFSET] - 1)
 
 
 def addUnderline(sheet, targetRow, targetColumnStart, columnOffset = 0):
